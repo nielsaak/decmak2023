@@ -1,0 +1,1 @@
+install.packages(c("R2jags", "pacman", "hesim", "extraDistr", "ggpubr", "truncnorm"))

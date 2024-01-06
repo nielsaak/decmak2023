@@ -1,0 +1,3 @@
+Rscript decmak2023/parameter_recovery/hierarchical_parameter_recovery/hier_ORL_recovery.R
+Rscript decmak2023/parameter_recovery/hierarchical_parameter_recovery/hier_ORL_recovery_wo_theta.R
+Rscript decmak2023/parameter_recovery/hierarchical_parameter_recovery/hier_ORL_recovery_k1.R

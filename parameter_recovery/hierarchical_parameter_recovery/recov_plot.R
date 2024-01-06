@@ -1,5 +1,5 @@
 # More informative plotting - code-courtesy of Lasse - fanx!
-recov_plot <- function(true, infer, plot_lab, plot_col) {
+recov_plot <- function(true, infer, plot_lab_1, plot_lab_2, plot_col, title) {
   
   # library(ggplot2)
   
@@ -13,11 +13,11 @@ recov_plot <- function(true, infer, plot_lab, plot_col) {
     geom_abline(intercept=0, slope=1, linetype=2) +
     geom_smooth(method = "lm", se = T, formula = "y ~ x") +
     theme_minimal() + #Setting theme
-    xlab(plot_lab[1]) + #Setting x label
-    ylab(plot_lab[2]) + #Setting y label
+    xlab(plot_lab_1) + #Setting x label
+    ylab(plot_lab_2) + #Setting y label
     labs(color = "") + #Setting legend title
-    ggtitle(paste0("'", plot_lab[2], "' compared to '", plot_lab[1], "'")) +
-    theme(legend.position="none")
+    ggtitle(title) +
+    theme(legend.position="none", plot.title = element_text(hjust = 0.5))
   
   return(pl)
   
