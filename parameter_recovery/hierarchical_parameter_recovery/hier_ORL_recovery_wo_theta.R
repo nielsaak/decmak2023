@@ -85,33 +85,33 @@ payoff <- cbind(A,B) # combining all four decks as columns with each 100 trials 
 colSums(payoff) # the two bad decks should sum to -25 (i.e. -2500), and the two good ones to 25 (i.e. 2500)
 
 ###--------------Run full parameter recovery -------------
-niterations <- 20 # fewer because it takes too long
+niterations <- 10 # fewer because it takes too long
 nsubs <- 9 # mimicking the data structure from Ahn et al.
 ntrials_all <- rep(ntrials, nsubs) # all 48 simulated subs have 100 trials each
 
 # mu
 true_mu_a_rew <- array(NA,c(niterations))
 true_mu_K <- array(NA,c(niterations))
-true_mu_theta <- array(NA,c(niterations))
+#true_mu_theta <- array(NA,c(niterations))
 true_mu_omega_f <- array(NA,c(niterations))
 true_mu_omega_p <- array(NA,c(niterations))
 
 infer_mu_a_rew <- array(NA,c(niterations))
 infer_mu_K <- array(NA,c(niterations))
-infer_mu_theta <- array(NA,c(niterations))
+#infer_mu_theta <- array(NA,c(niterations))
 infer_mu_omega_f <- array(NA,c(niterations))
 infer_mu_omega_p <- array(NA,c(niterations))
 
 # sigma (SD for R) / lambda (precision for JAGS)
 true_lambda_a_rew <- array(NA,c(niterations))
 true_lambda_K <- array(NA,c(niterations))
-true_lambda_theta <- array(NA,c(niterations))
+#true_lambda_theta <- array(NA,c(niterations))
 true_lambda_omega_f <- array(NA,c(niterations))
 true_lambda_omega_p <- array(NA,c(niterations))
 
 infer_lambda_a_rew <- array(NA,c(niterations))
 infer_lambda_K <- array(NA,c(niterations))
-infer_lambda_theta <- array(NA,c(niterations))
+#infer_lambda_theta <- array(NA,c(niterations))
 infer_lambda_omega_f <- array(NA,c(niterations))
 infer_lambda_omega_p <- array(NA,c(niterations))
 
@@ -122,13 +122,13 @@ for (i in 1:niterations) {
   # let's see how robust the model is. Does it recover all sorts of values?
   mu_a_rew <- runif(1,0,1)
   mu_K <- runif(1,0,2)
-  mu_theta <- runif(1,.2,2) # could also just be a set value (e.g. 1) to simplify the model a bit
+  #mu_theta <- runif(1,.2,2) # could also just be a set value (e.g. 1) to simplify the model a bit
   mu_omega_f <- runif(1,-2,2)
   mu_omega_p <- runif(1,-2,2)
   
   sigma_a_rew <- runif(1,0,0.1)
   sigma_K <- runif(1,0,0.2)
-  sigma_theta <- runif(1,0,0.2) # if theta is just a set value (e.g. 1), then this isn't relevant anymore
+  #sigma_theta <- runif(1,0,0.2) # if theta is just a set value (e.g. 1), then this isn't relevant anymore
   sigma_omega_f <- runif(1,0,0.4)
   sigma_omega_p <- runif(1,0,0.4)
   
@@ -139,10 +139,10 @@ for (i in 1:niterations) {
   # sigma_omega_f <- runif(1,0,.5)
   # sigma_omega_p <- runif(1,0,.5)
   
-  source('hier_ORL_sim.R')
+  source('hier_ORL_sim_wo_theta.R')
   ORL_sims <- hier_ORL_sim(payoff,nsubs,ntrials,mu_a_rew,
-                           mu_K,mu_theta,mu_omega_f,mu_omega_p,
-                           sigma_a_rew,sigma_K,sigma_theta,
+                           mu_K,mu_omega_f,mu_omega_p,
+                           sigma_a_rew,sigma_K,
                            sigma_omega_f,sigma_omega_p)
   
   x <- ORL_sims$x
@@ -151,17 +151,17 @@ for (i in 1:niterations) {
   # set up jags and run jags model
   data <- list("x","X","ntrials","nsubs") 
   params<-c("mu_a_rew",
-            "mu_K","mu_theta","mu_omega_f","mu_omega_p",
-            "lambda_a_rew","lambda_K","lambda_theta",
+            "mu_K","mu_omega_f","mu_omega_p",
+            "lambda_a_rew","lambda_K",
             "lambda_omega_f","lambda_omega_p")
   samples <- jags.parallel(data, inits=NULL, params,
-                           model.file ="hier_ORL.txt", n.chains=3, 
+                           model.file ="hier_ORL_wo_theta.txt", n.chains=3, 
                            n.iter=5000, n.burnin=1000, n.thin=1, n.cluster=4)
   
   # mu
   true_mu_a_rew[i] <- mu_a_rew
   true_mu_K[i] <- mu_K
-  true_mu_theta[i] <- mu_theta
+  #true_mu_theta[i] <- mu_theta
   true_mu_omega_f[i] <- mu_omega_f
   true_mu_omega_p[i] <- mu_omega_p
   
@@ -169,21 +169,21 @@ for (i in 1:niterations) {
   Y <- samples$BUGSoutput$sims.list
   infer_mu_a_rew[i] <- MPD(Y$mu_a_rew)
   infer_mu_K[i] <- MPD(Y$mu_K)
-  infer_mu_theta[i] <- MPD(Y$mu_theta)
+  #infer_mu_theta[i] <- MPD(Y$mu_theta)
   infer_mu_omega_f[i] <- MPD(Y$mu_omega_f)
   infer_mu_omega_p[i] <- MPD(Y$mu_omega_p)
   
   # lambda
   true_lambda_a_rew[i] <- sigma_a_rew
   true_lambda_K[i] <- sigma_K
-  true_lambda_theta[i] <- sigma_theta
+  #true_lambda_theta[i] <- sigma_theta
   true_lambda_omega_f[i] <- sigma_omega_f
   true_lambda_omega_p[i] <- sigma_omega_p
   
   # find maximum a posteriori
   infer_lambda_a_rew[i] <- MPD(Y$lambda_a_rew)
   infer_lambda_K[i] <- MPD(Y$lambda_K)
-  infer_lambda_theta[i] <- MPD(Y$lambda_theta)
+  #infer_lambda_theta[i] <- MPD(Y$lambda_theta)
   infer_lambda_omega_f[i] <- MPD(Y$lambda_omega_f)
   infer_lambda_omega_p[i] <- MPD(Y$lambda_omega_p)
   
@@ -202,27 +202,30 @@ pl1 <- recov_plot(true_mu_a_rew, infer_mu_a_rew, c("true mu_a_rew", "infer mu_a_
   coord_cartesian(xlim = c(0, 1), ylim = c(0,1)) 
 pl3 <- recov_plot(true_mu_K, infer_mu_K, c("true mu_K", "infer mu_K"), 'smoothed linear fit') +
   coord_cartesian(xlim = c(0, 2), ylim = c(0,2)) 
-pl4 <- recov_plot(true_mu_theta, infer_mu_theta, c("true mu_theta", "infer mu_theta"), 'smoothed linear fit') +
-  coord_cartesian(xlim = c(0, 2), ylim = c(0,2)) 
 pl5 <- recov_plot(true_mu_omega_f, infer_mu_omega_f, c("true mu_omega_f", "infer mu_omega_f"), 'smoothed linear fit') +
   coord_cartesian(xlim = c(-2, 2), ylim = c(-2,2)) 
 pl6 <- recov_plot(true_mu_omega_p, infer_mu_omega_p, c("true mu_omega_p", "infer mu_omega_p"), 'smoothed linear fit') +
   coord_cartesian(xlim = c(-2, 2), ylim = c(-2,2)) 
-ggarrange(pl1, pl3, pl4, pl5, pl6)
-ggsave("output/recovery_mu_80_trials_20_iter_unscaled_theta02.png", width = 10, height = 5)
+pl7 <- recov_plot(true_mu_omega_p, infer_mu_omega_p, c("true mu_omega_p", "infer mu_omega_p"), 'smoothed linear fit') +
+  coord_cartesian(xlim = c(-2, 2), ylim = c(-2,2)) 
+ggarrange(pl1, pl3, pl7, pl5, pl6)
+ggsave("output/recovery_mu_80_trials_10_iter_unscaled_notheta.png", width = 10, height = 5)
 
 pl1 <- recov_plot(true_lambda_a_rew, sqrt(1/infer_lambda_a_rew), c("true lambda_a_rew", "infer lambda_a_rew"), 'smoothed linear fit')  +
   coord_cartesian(xlim = c(0, 0.1), ylim = c(0,0.3)) 
 pl3 <- recov_plot(true_lambda_K, sqrt(1/infer_lambda_K), c("true lambda_K", "infer lambda_K"), 'smoothed linear fit')  +
   coord_cartesian(xlim = c(0, 0.2), ylim = c(0,4)) 
-pl4 <- recov_plot(true_lambda_theta, sqrt(1/infer_lambda_theta), c("true lambda_theta", "infer lambda_theta"), 'smoothed linear fit') +
-  coord_cartesian(xlim = c(0, 0.2), ylim = c(0,0.5)) 
 pl5 <- recov_plot(true_lambda_omega_f, sqrt(1/infer_lambda_omega_f), c("true lambda_omega_f", "infer lambda_omega_f"), 'smoothed linear fit') +
   coord_cartesian(xlim = c(0, 0.4), ylim = c(0,0.8)) 
 pl6 <- recov_plot(true_lambda_omega_p, sqrt(1/infer_lambda_omega_p), c("true lambda_omega_p", "infer lambda_omega_p"), 'smoothed linear fit')  +
   coord_cartesian(xlim = c(0, 0.4), ylim = c(0,4)) 
-ggarrange(pl1, pl3, pl4, pl5, pl6)
-ggsave("output/recovery_lambda_80_trials_20_iter_unscaled_theta02.png", width = 10, height = 5)
+pl7 <- recov_plot(true_lambda_omega_p, sqrt(1/infer_lambda_omega_p), c("true lambda_omega_p", "infer lambda_omega_p"), 'smoothed linear fit')  +
+  coord_cartesian(xlim = c(0, 0.4), ylim = c(0,4)) 
+ggarrange(pl1, pl3, pl5, pl6, pl7)
+ggsave("output/recovery_lambda_80_trials_10_iter_unscaled_notheta.png", width = 10, height = 5)
 
+
+
+par(mfrow=c(6,2))
 traceplot(samples)
 

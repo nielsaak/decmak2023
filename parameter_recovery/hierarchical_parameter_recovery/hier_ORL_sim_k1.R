@@ -1,6 +1,6 @@
 hier_ORL_sim <- function(payoff,nsubs,ntrials,mu_a_rew,
-                         mu_K,mu_theta,mu_omega_f,mu_omega_p,
-                         sigma_a_rew,sigma_K,sigma_theta,
+                         mu_theta,mu_omega_f,mu_omega_p,
+                         sigma_a_rew,sigma_theta,
                          sigma_omega_f,sigma_omega_p) {
   
   # arrays to populate for simulation
@@ -13,7 +13,7 @@ hier_ORL_sim <- function(payoff,nsubs,ntrials,mu_a_rew,
     
     # free parameters - sampled from a normal distribution with group mean and sd
     a_rew <- rtruncnorm(1,0,,mu_a_rew,sigma_a_rew)
-    K <- rtruncnorm(1,0,,mu_K,sigma_K)
+    K <- 1 #rtruncnorm(1,0,,mu_K,sigma_K)
     theta <- rtruncnorm(1,0,,mu_theta,sigma_theta)
     omega_f <- rtruncnorm(1,0,,mu_omega_f,sigma_omega_f)
     omega_p <- rtruncnorm(1,0,,mu_omega_p,sigma_omega_p)

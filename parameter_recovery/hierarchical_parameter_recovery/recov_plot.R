@@ -16,7 +16,8 @@ recov_plot <- function(true, infer, plot_lab, plot_col) {
     xlab(plot_lab[1]) + #Setting x label
     ylab(plot_lab[2]) + #Setting y label
     labs(color = "") + #Setting legend title
-    ggtitle(paste0("'", plot_lab[2], "' compared to '", plot_lab[1], "'"))
+    ggtitle(paste0("'", plot_lab[2], "' compared to '", plot_lab[1], "'")) +
+    theme(legend.position="none")
   
   return(pl)
   
