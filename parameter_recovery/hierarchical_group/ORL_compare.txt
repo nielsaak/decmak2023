@@ -59,11 +59,9 @@ model {
         # -------- Updating expected frequencies ------------------------
         #update expected frequencies for ALL decks - AS IF THERE WERE ALL CHOSEN
         Ef_cho_monkey[s,t,d] <- Ef_monkey[s,t-1,d] + a_rew_monkey[s]*(signX_monkey[s,t] - Ef_monkey[s,t-1,d])
-        )
         
         #update expected frequencies for ALL decks - AS IF THEY WERE ALL UNCHOSEN. 
-        Ef_not_monkey[s,t,d] <- Ef_monkey[s,t-1,d] + a_rew_monkey[s]*(-(signX_monkey[s,t]/1) - Ef_monkey[s,t-1,d]
-        ) 
+        Ef_not_monkey[s,t,d] <- Ef_monkey[s,t-1,d] + a_rew_monkey[s]*(-(signX_monkey[s,t]/1) - Ef_monkey[s,t-1,d]) 
         
         #copy appropriate values to ef variable
         Ef_monkey[s,t,d] <- ifelse(d==x_monkey[s,t-1],Ef_cho_monkey[s,t,d],Ef_not_monkey[s,t,d])  
