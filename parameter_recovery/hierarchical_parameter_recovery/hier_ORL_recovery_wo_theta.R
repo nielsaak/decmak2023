@@ -195,17 +195,19 @@ for (i in 1:niterations) {
 end_time = Sys.time()
 end_time - start_time
 
+#load("hier_ORL_recovery_wo_theta.RData")
+
 # let's look at some scatter plots
 # plotting code courtesy of Lasse
 source('recov_plot.R')
 pl1 <- recov_plot(true_mu_a_rew, infer_mu_a_rew, plot_lab_1 = expression("True "*mu[arew]), plot_lab_2 = expression("Inferred "*mu[arew]), 'smoothed linear fit', title=expression(mu[arew])) +
   coord_cartesian(xlim = c(0, 1), ylim = c(0,1)) 
 pl4 <- recov_plot(true_mu_K, infer_mu_K, plot_lab_1 = expression("True "*mu[K]), plot_lab_2 = expression("Inferred "*mu[K]), 'smoothed linear fit', title=expression(mu[K])) +
-  coord_cartesian(xlim = c(0, 2), ylim = c(0,2))
+  coord_cartesian(xlim = c(0, 2), ylim = c(0,1.7))
 pl5 <- recov_plot(true_mu_omega_f, infer_mu_omega_f, plot_lab_1 = expression("True "*mu[omega][F]), plot_lab_2 = expression("Inferred "*mu[omega][F]), 'smoothed linear fit', title=expression(mu[omega][F])) +
-  coord_cartesian(xlim = c(-2, 2), ylim = c(-2,2)) 
+  coord_cartesian(xlim = c(-2, 2), ylim = c(-2,3)) 
 pl6 <- recov_plot(true_mu_omega_p, infer_mu_omega_p, plot_lab_1 = expression("True "*mu[omega][P]), plot_lab_2 = expression("Inferred "*mu[omega][P]), 'smoothed linear fit', title=expression(mu[omega][P])) +
-  coord_cartesian(xlim = c(-2, 2), ylim = c(-2,2)) 
+  coord_cartesian(xlim = c(-2, 2), ylim = c(-2,3)) 
 
 plot_1 <- ggarrange(pl1, pl4, pl5, pl6, ncol = 2, nrow = 2)
 print(plot_1)
@@ -218,13 +220,13 @@ dev.off()
 #ggsave(plot = plot_1, "output/recovery_mu_80_trials_100_iter_theta1.png")
 
 pl1 <- recov_plot(true_lambda_a_rew, sqrt(1/infer_lambda_a_rew), plot_lab_1 = expression("True "*lambda[arew]), plot_lab_2 = expression("Inferred "*lambda[arew]), 'smoothed linear fit', title=expression(lambda[arew])) +
-  coord_cartesian(xlim = c(0, 0.1), ylim = c(0,0.3)) 
+  coord_cartesian(xlim = c(0, 0.1), ylim = c(0,0.5)) 
 pl4 <- recov_plot(true_lambda_K, sqrt(1/infer_lambda_K), plot_lab_1 = expression("True "*lambda[K]), plot_lab_2 = expression("Inferred "*lambda[K]), 'smoothed linear fit', title=expression(lambda[K])) +
-  coord_cartesian(xlim = c(0, 0.2), ylim = c(0,0.5)) 
+  coord_cartesian(xlim = c(0, 0.2), ylim = c(0,3)) 
 pl5 <- recov_plot(true_lambda_omega_f, sqrt(1/infer_lambda_omega_f), plot_lab_1 = expression("True "*lambda[omega][F]), plot_lab_2 = expression("Inferred "*lambda[omega][F]), 'smoothed linear fit', title=expression(lambda[omega][F])) +
-  coord_cartesian(xlim = c(0, 0.4), ylim = c(0,0.8)) 
+  coord_cartesian(xlim = c(0, 0.4), ylim = c(0,1)) 
 pl6 <- recov_plot(true_lambda_omega_p, sqrt(1/infer_lambda_omega_p), plot_lab_1 = expression("True "*lambda[omega][P]), plot_lab_2 = expression("Inferred "*lambda[omega][P]), 'smoothed linear fit', title=expression(lambda[omega][P])) +
-  coord_cartesian(xlim = c(0, 0.4), ylim = c(0,4))
+  coord_cartesian(xlim = c(0, 0.4), ylim = c(0,3.5))
 
 plot_2 <- ggarrange(pl1, pl4, pl5, pl6, ncol = 2, nrow = 2)
 print(plot_2)
