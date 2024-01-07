@@ -20,8 +20,6 @@ model {
   mu_omega_p ~ dnorm(0,1)
   lambda_omega_p_monkey ~ dgamma(.1,.1) 
   lambda_omega_p_human ~ dgamma(.1,.1) 
-  
-  # no theta? Should we do theta?
 
   #----------- Control model -------------------------------------------
   for (s in 1:nsubs_monkey) {
@@ -61,11 +59,9 @@ model {
         # -------- Updating expected frequencies ------------------------
         #update expected frequencies for ALL decks - AS IF THERE WERE ALL CHOSEN
         Ef_cho_monkey[s,t,d] <- Ef_monkey[s,t-1,d] + a_rew_monkey[s]*(signX_monkey[s,t] - Ef_monkey[s,t-1,d])
-        )
         
         #update expected frequencies for ALL decks - AS IF THEY WERE ALL UNCHOSEN. 
-        Ef_not_monkey[s,t,d] <- Ef_monkey[s,t-1,d] + a_rew_monkey[s]*(-(signX_monkey[s,t]/1) - Ef_monkey[s,t-1,d]
-        ) 
+        Ef_not_monkey[s,t,d] <- Ef_monkey[s,t-1,d] + a_rew_monkey[s]*(-(signX_monkey[s,t]/1) - Ef_monkey[s,t-1,d]) 
         
         #copy appropriate values to ef variable
         Ef_monkey[s,t,d] <- ifelse(d==x_monkey[s,t-1],Ef_cho_monkey[s,t,d],Ef_not_monkey[s,t,d])  
@@ -104,6 +100,15 @@ model {
       
     Ev_human[s,1,1] <- 0
     Ev_human[s,1,2] <- 0
+
+    Ef_human[s,1,1] <- 0
+    Ef_human[s,1,2] <- 0
+      
+    PS_human[s,1,1] <- 0
+    PS_human[s,1,2] <- 0
+
+    p_human[s,1,1] <- 0
+    p_human[s,1,2] <- 0
       
     for (t in 2:ntrials_human[s]) {
       
