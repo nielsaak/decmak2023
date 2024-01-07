@@ -85,7 +85,7 @@ payoff <- cbind(A,B) # combining all four decks as columns with each 100 trials 
 colSums(payoff) # the two bad decks should sum to -25 (i.e. -2500), and the two good ones to 25 (i.e. 2500)
 
 ###--------------Run full parameter recovery -------------
-niterations <- 1 # fewer because it takes too long
+niterations <- 100 # fewer because it takes too long
 nsubs <- 9 # mimicking the data structure from Ahn et al.
 ntrials_all <- rep(ntrials, nsubs) # all 48 simulated subs have 100 trials each
 
@@ -209,9 +209,15 @@ pl5 <- recov_plot(true_mu_omega_f, infer_mu_omega_f, plot_lab_1 = expression("Tr
 pl6 <- recov_plot(true_mu_omega_p, infer_mu_omega_p, plot_lab_1 = expression("True "*mu[omega][P]), plot_lab_2 = expression("Inferred "*mu[omega][P]), 'smoothed linear fit', title=expression(mu[omega][P])) +
   coord_cartesian(xlim = c(-2, 2), ylim = c(-2,2)) 
 
-plot_1 <- ggarrange(pl1, pl4, pl7, pl5, pl6, ncol = 2, nrow = 2)
+plot_1 <- ggarrange(pl1, pl4, pl7, pl5, pl6, ncol = 2, nrow = 3)
 print(plot_1)
-ggsave(plot = plot_1, "output/recovery_mu_80_trials_100_iter.png", width = 10, height = 30)
+
+# Saving in a different (weird) way to ensure symbol formatting
+png(filename = "output/recovery_mu_80_trials_100_iter.png", type = "cairo-png", height = 1800, width = 1200, res = 170)
+print(plot_1)
+dev.off()
+
+#ggsave(plot = plot_1, "output/recovery_mu_80_trials_100_iter.png", width = 10, height = 30)
 
 pl1 <- recov_plot(true_lambda_a_rew, sqrt(1/infer_lambda_a_rew), plot_lab_1 = expression("True "*lambda[arew]), plot_lab_2 = expression("Inferred "*lambda[arew]), 'smoothed linear fit', title=expression(lambda[arew])) +
   coord_cartesian(xlim = c(0, 0.1), ylim = c(0,0.3)) 
@@ -226,7 +232,13 @@ pl6 <- recov_plot(true_lambda_omega_p, sqrt(1/infer_lambda_omega_p), plot_lab_1 
 
 plot_2 <- ggarrange(pl1, pl4, pl7, pl5, pl6, ncol = 2, nrow = 3)
 print(plot_2)
-ggsave(plot = plot_2, "output/recovery_lambda_80_trials_100_iter.png", width = 10, height = 30)
+
+# Saving in a different (weird) way to ensure symbol formatting
+png(filename = "output/recovery_lambda_80_trials_100_iter.png", type = "cairo-png", height = 1800, width = 1200, res = 170)
+print(plot_2)
+dev.off()
+
+#ggsave(plot = plot_2, "output/recovery_lambda_80_trials_100_iter.png", width = 10, height = 30)
 
 traceplot(samples)
 

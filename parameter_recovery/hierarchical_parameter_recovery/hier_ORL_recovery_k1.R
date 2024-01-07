@@ -85,7 +85,7 @@ payoff <- cbind(A,B) # combining all four decks as columns with each 100 trials 
 colSums(payoff) # the two bad decks should sum to -25 (i.e. -2500), and the two good ones to 25 (i.e. 2500)
 
 ###--------------Run full parameter recovery -------------
-niterations <- 1 # fewer because it takes too long
+niterations <- 100 # fewer because it takes too long
 nsubs <- 9 # mimicking the data structure from Ahn et al.
 ntrials_all <- rep(ntrials, nsubs) # all 48 simulated subs have 100 trials each
 
@@ -198,7 +198,7 @@ end_time - start_time
 # let's look at some scatter plots
 # plotting code courtesy of Lasse
 source('recov_plot.R')
-pl1 <- recov_plot(true_mu_a_rew, infer_mu_a_rew, plot_lab_1 = paste("True ", expression(mu), expression([arew])), plot_lab_2 = expression("Inferred "*mu[arew]), 'smoothed linear fit', title=expression(mu[arew])) +
+pl1 <- recov_plot(true_mu_a_rew, infer_mu_a_rew, plot_lab_1 = bquote("True"~mu[arew]), plot_lab_2 = expression("Inferred "*mu[arew]), 'smoothed linear fit', title=expression(mu[arew])) +
   coord_cartesian(xlim = c(0, 1), ylim = c(0,1)) 
 pl4 <- recov_plot(true_mu_theta, infer_mu_theta, plot_lab_1 = expression("True "*mu[theta]), plot_lab_2 = expression("Inferred "*mu[theta]), 'smoothed linear fit', title=expression(mu[theta])) +
   coord_cartesian(xlim = c(0, 2), ylim = c(0,2))
@@ -208,8 +208,15 @@ pl6 <- recov_plot(true_mu_omega_p, infer_mu_omega_p, plot_lab_1 = expression("Tr
   coord_cartesian(xlim = c(-2, 2), ylim = c(-2,2)) 
 
 plot_1 <- ggarrange(pl1, pl4, pl5, pl6, ncol = 2, nrow = 2)
+
 print(plot_1)
-ggsave(plot = plot_1, "output/recovery_mu_80_trials_100_iter_k1.png")
+
+# Saving in a different (weird) way to ensure symbol formatting
+png(filename = "output/recovery_mu_80_trials_100_iter_k1.png", type = "cairo-png", height = 1200, width = 1200, res = 170)
+print(plot_1)
+dev.off()
+
+#ggsave(plot = plot_1, "output/recovery_mu_80_trials_100_iter_k1.png")
 
 pl1 <- recov_plot(true_lambda_a_rew, sqrt(1/infer_lambda_a_rew), plot_lab_1 = expression("True "*lambda[arew]), plot_lab_2 = expression("Inferred "*lambda[arew]), 'smoothed linear fit', title=expression(lambda[arew])) +
   coord_cartesian(xlim = c(0, 0.1), ylim = c(0,0.3)) 
@@ -222,7 +229,13 @@ pl6 <- recov_plot(true_lambda_omega_p, sqrt(1/infer_lambda_omega_p), plot_lab_1 
 
 plot_2 <- ggarrange(pl1, pl4, pl5, pl6, ncol = 2, nrow = 2)
 print(plot_2)
-ggsave(plot = plot_2, "output/recovery_lambda_80_trials_100_iter_k1.png", width = 10, height = 20)
+
+# Saving in a different (weird) way to ensure symbol formatting
+png(filename = "output/recovery_lambda_80_trials_100_iter_k1.png", type = "cairo-png", height = 1200, width = 1200, res = 170)
+print(plot_2)
+dev.off()
+
+#ggsave(plot = plot_2, "output/recovery_lambda_80_trials_100_iter_k1.png", width = 10, height = 20)
 
 traceplot(samples)
 
