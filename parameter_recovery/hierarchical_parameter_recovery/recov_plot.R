@@ -5,6 +5,12 @@ recov_plot <- function(true, infer, plot_lab_1, plot_lab_2, plot_col, title) {
   
   df <- data.frame(true, infer)
   
+  # Linear regression
+  model <- lm(infer ~ true, data = df)
+
+  # Get R-squared value
+  r_squared <- summary(model)$r.squared
+
   pl <- ggplot(df, aes(x = true,
                        y = infer,
                        color = plot_col)) + #Setting aesthetics for plot
@@ -12,13 +18,11 @@ recov_plot <- function(true, infer, plot_lab_1, plot_lab_2, plot_col, title) {
     #scale_linetype(name="perfect recovery") +
     geom_abline(intercept=0, slope=1, linetype=2) +
     geom_smooth(method = "lm", se = T, formula = "y ~ x") +
-    stat_cor(method = "pearson", aes(label = ..r.label..), label) +
     theme_minimal() + #Setting theme
     xlab(plot_lab_1) + #Setting x label
     ylab(plot_lab_2) + #Setting y label
-    labs(color = "") + #Setting legend title
-    ggtitle(title) +
-    theme(legend.position="none", plot.title = element_text(hjust = 0.5))
+    labs(title = title, subtitle = paste("R² =", round(r_squared, 2))) + #Setting legend title
+    theme(legend.position="none", plot.title = element_text(size = rel(2), hjust = 0.5))
   
   return(pl)
   
